@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="images/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat | Create User</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="neumorphism-box">
+        <h1>Create User</h1>
+        <form id="userForm">
+          <div class="input-field">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter your username"
+              required
+            />
+          </div>
+          <div class="input-field">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <div class="input-field">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="input-field">
+            <label for="full_name">Full Name</label>
+            <input
+              type="text"
+              id="full_name"
+              name="full_name"
+              placeholder="Enter your full name"
+            />
+          </div>
+          <button type="submit">Create User</button>
+        </form>
+      </div>
+      <center>
+        <a href="http://127.0.0.1/login.html">
+          <button id="createUser" class="create" type="submit">
+            Back to Login
+          </button>
+        </a>
+      </center>
+    </div>
+
+    <script>
+      const BaseUrl = "http://127.0.0.1:8000";
+      const FrontBaseUrl = "http://127.0.0.1";
+
+      document
+        .getElementById("userForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const formData = new FormData(document.getElementById("userForm"));
+
+          fetch(BaseUrl + "/user/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(Object.fromEntries(formData)),
+          })
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error("Failed to create user");
+              }
+            })
+            .then((data) => {
+              alert("User Created Successfully");
+              window.location.href = FrontBaseUrl + "/login.html";
+            })
+            .catch((error) => {
+              alert(
+                "There was a problem in creating a user. Be careful, the username and email must be unique."
+              );
+            });
+        });
+    </script>
+  </body>
+</html>

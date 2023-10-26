@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="images/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat | Login</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="neumorphism-box">
+        <h1>Login</h1>
+        <form>
+          <div class="input-field">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter your username"
+              required
+            />
+          </div>
+          <div class="input-field">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+      <center>
+        <a href="http://127.0.0.1/create_user.html">
+          <button id="createUser" class="create" type="submit">
+            Create An Account
+          </button></a
+        >
+      </center>
+    </div>
+  </body>
+  <script>
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(";");
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+    const token = getCookie("token");
+    const username = getCookie("username");
+
+    if (token && username) {
+      window.location.href = "http://127.0.0.1/chat.html";
+    }
+
+    function setCookie(cname, cvalue, exdays) {
+      const d = new Date();
+      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+      let expires = "expires=" + d.toUTCString();
+      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+    const loginButton = document.querySelector("button[type='submit']");
+
+    loginButton.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      fetch("http://127.0.0.1:8000/token", {
+        method: "POST",
+        body: new URLSearchParams({
+          username: username,
+          password: password,
+        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.access_token) {
+            setCookie("token", data.access_token, 30);
+            setCookie("username", username, 30);
+            window.location.href = "http://127.0.0.1";
+          } else {
+            alert("Authentication failed. Please check your credentials.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+  </script>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="images/favicon.png" />
+    <link rel="stylesheet" href="./style_index.css" />
+  </head>
+  <body>
+    <section class="msger">
+      <header class="msger-header">
+        <div class="msger-header-title">
+          <a href="http://127.0.0.1" style="text-decoration: none !important"
+            ><i class="fas fa-comment-alt"
+              ><span
+                style="color: rgb(0, 196, 65)"
+                id="group_name_text"
+              ></span></i
+          ></a>
+        </div>
+        <div
+          style="margin-right: auto"
+          class="msger-header-title"
+          id="logout-button"
+        >
+          <i
+            style="
+              margin-left: 12px;
+              color: rgb(236, 165, 198);
+              font-size: 11px;
+            "
+            class="fas fa-comment-alt"
+          >
+            LogOut</i
+          >
+        </div>
+        <div
+          style="margin-left: auto; font-size: 8px"
+          class="msger-header-title"
+        >
+          <i style="margin-left: 20px" class="fas fa-comment-alt">
+            <span
+              id="show_members"
+              style="
+                color: rgb(14, 16, 37);
+                font-family: 'Trebuchet MS', 'Lucida Sans Unicode',
+                  'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+                font-size: 7px;
+              "
+              >¦
+            </span>
+          </i>
+        </div>
+        <div class="msger-header-options">
+          <span><i class="fas fa-cog"></i></span>
+        </div>
+      </header>
+
+      <main class="msger-chat"></main>
+
+      <form class="msger-inputarea">
+        <input
+          type="text"
+          class="msger-input"
+          placeholder="Enter your message..."
+        />
+        <button type="submit" class="msger-send-btn">Send</button>
+      </form>
+    </section>
+    <script src="./script.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <div id="myPopup" class="popup">
+      <div class="popup-content">
+        <p style="font-family: vazir; border-radius: 0.5rem">Edit message:</p>
+        <form>
+          <input
+            type="text"
+            style="
+              width: 200px;
+              padding: 10px;
+              border: 2px solid #ccc;
+              border-radius: 5px;
+              font-size: 16px;
+              text-align: right;
+            "
+            id="edit_text_fill"
+          />
+          <button
+            type="button"
+            id="editButton"
+            style="
+              background-color: #12bd37;
+              color: #fff;
+              width: 10rem;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              margin-top: 10px;
+            "
+          >
+            Edit
+          </button>
+          <button
+            id="closePopup"
+            type="button"
+            style="
+              background-color: #d42d2d;
+              color: #fff;
+              border: none;
+              width: 10rem;
+              border-radius: 5px;
+              cursor: pointer;
+              margin-top: 10px;
+            "
+          >
+            Close
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
