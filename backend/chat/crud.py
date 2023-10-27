@@ -218,3 +218,26 @@ async def delete_changes_by_group(
     group_id: int,
 ) -> None:
     db.query(models.Changes).filter(models.Changes.group_id == group_id).delete()
+
+
+async def edit_message(
+    db: Session,
+    changed_message: str,
+    message: models.Message,
+) -> models.Message:
+    message.text = changed_message
+    db.commit()
+    return message
+
+
+async def delete_message(
+    db: Session,
+    message: models.Message,
+) -> None:
+    unread_messages = (
+        db.query(models.UnreadMessage).filter_by(message_id=message.id).first()
+    )
+    if unread_messages:
+        db.delete(unread_messages)
+    db.delete(message)
+    db.commit()

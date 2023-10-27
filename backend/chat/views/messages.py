@@ -11,6 +11,8 @@ from chat.crud import (
     group_membership_check,
     get_first_unread_message_group,
     create_change_controller,
+    edit_message,
+    delete_message,
 )
 from chat.utils.exception import (
     ForbiddenException,
@@ -74,8 +76,11 @@ async def edit_message_by_id(
             sender_id=current_user.id,
             changes_type=models.ChangeType.Edit,
         )
-        message.text = changed_message
-        db.commit()  ## TODO MOVE THIS TO CRUD
+        message = await edit_message(
+            db=db,
+            message=message,
+            changed_message=changed_message,
+        )
         await broadcast_changes(
             db=db,
             group_id=message.group_id,
@@ -106,11 +111,6 @@ async def delete_message_by_id(
         user_id=current_user.id,
     )
     if message:
-        unread_messages = (
-            db.query(models.UnreadMessage).filter_by(message_id=message.id).first()
-        )
-        if unread_messages:
-            db.delete(unread_messages)
         await create_change_controller(
             db=db,
             new_text="",
@@ -119,9 +119,6 @@ async def delete_message_by_id(
             sender_id=current_user.id,
             changes_type=models.ChangeType.Delete,
         )
-        db.delete(message)
-        db.commit()
-
         await broadcast_changes(
             db=db,
             group_id=message.group_id,
@@ -129,5 +126,6 @@ async def delete_message_by_id(
             message_id=message_id,
             new_text="",
         )
+        await delete_message(db=db, message=message)
         return message.text
     raise ForbiddenException
