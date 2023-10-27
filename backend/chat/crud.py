@@ -161,6 +161,7 @@ async def get_reads_messages(
         db.query(models.Message)
         .filter(models.Message.group_id == group_id)
         .filter(models.Message.id.notin_(unread_message_ids))
+        .order_by(models.Message.id)
         .all()
     )
     return messages
