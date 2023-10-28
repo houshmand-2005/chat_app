@@ -1,0 +1,36 @@
+version: '3'
+services:
+  # PostgreSQL database
+  db:
+    image: postgres:16.0-alpine3.18
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+  # FrontEnd
+  nginx:
+    image: nginx:1.25.3-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    depends_on:
+      - app
+  # FastApi
+  app:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    command:
+      [
+        "uvicorn",
+        "main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ]
