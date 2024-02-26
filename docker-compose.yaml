@@ -2,14 +2,19 @@ version: '3'
 services:
   # PostgreSQL database
   db:
-    image: postgres:16.0-alpine3.18
+    image: postgres:16.2-alpine3.19
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # FrontEnd
   nginx:
-    image: nginx:1.25.3-alpine
+    image: nginx:1.25.4-alpine
     ports:
       - "80:80"
     volumes:
@@ -34,3 +39,8 @@ services:
         "--port",
         "8000"
       ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:8000/health/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
