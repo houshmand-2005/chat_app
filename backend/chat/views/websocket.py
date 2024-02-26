@@ -1,19 +1,19 @@
 import asyncio
 import json
-from fastapi import WebSocket, Depends, WebSocketDisconnect
+
+from fastapi import Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 
-from chat import models
-from chat.utils.jwt import get_current_user
-from chat.database import get_db
-from chat.models import Message, User
+from chat import app, logger, models
 from chat.crud import (
-    group_membership_check,
     create_message_controller,
     create_unread_message_controller,
     get_group_by_id,
+    group_membership_check,
 )
-from chat import app, logger
+from chat.database import get_db
+from chat.models import Message, User
+from chat.utils.jwt import get_current_user
 
 websocket_connections = {}
 
@@ -160,26 +160,17 @@ async def send_unread_messages(
     """send unread messages to client"""
     while True:
         db.refresh(user)
-        all_unread_messages = user.unread_messages
-        unread_messages_group = []
+        all_unread_messages: models.UnreadMessage = user.unread_messages
+        unread_messages_group: list[models.UnreadMessage] = []
         if all_unread_messages:
             unread_messages_group = [
                 un_mes
                 for un_mes in all_unread_messages
                 if str(un_mes.group_id) == str(group_id)
             ]
-        if unread_messages_group:
-            for unread_message in unread_messages_group:
-                message = unread_message.message
-                message = {
-                    "text": message.text,
-                    "sender_name": message.sender_name,
-                    "id": message.id,
-                    "type": "Text",
-                    "datetime": str(message.created_at),
-                }
-                await websocket.send_text(json.dumps(message))
-                db.delete(unread_message)
+            await send_messages_concurrently(websocket, unread_messages_group)
+            for message in all_unread_messages:
+                db.delete(message)
             db.commit()
         else:
             try:
@@ -245,3 +236,24 @@ async def send_change_to_user(
             user_id
         ]  # TODO this thing send changes to all users and this isn't good
         await connection.send_text(json.dumps(change_data))
+
+
+async def send_messages_concurrently(
+    websocket: WebSocket, messages: list[models.UnreadMessage]
+):
+    """Send Messages"""
+    tasks = [
+        websocket.send_text(
+            json.dumps(
+                {
+                    "text": message.message.text,
+                    "sender_name": message.message.sender_name,
+                    "id": message.message.id,
+                    "type": "Text",
+                    "datetime": str(message.message.created_at),
+                }
+            )
+        )
+        for message in messages
+    ]
+    await asyncio.gather(*tasks)
