@@ -1,19 +1,27 @@
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
 from datetime import timedelta
 from typing import Annotated
+
+from fastapi import Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+
 from chat import app
-from chat.setting import setting
+from chat.database import get_db
 from chat.schema import Token
+from chat.setting import setting
+from chat.utils.exception import (
+    CredentialsException,
+)
 from chat.utils.jwt import (
     authenticate_user,
     create_access_token,
 )
-from chat.utils.exception import (
-    CredentialsException,
-)
-from chat.database import get_db
+
+
+@app.get("/health")
+async def health_check():
+    """Health Check View"""
+    return status.HTTP_200_OK
 
 
 @app.post("/token", response_model=Token)
