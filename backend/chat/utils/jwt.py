@@ -3,7 +3,7 @@ from typing import Annotated
 
 import bcrypt
 from chat import models
-from chat.database import get_db
+from chat.database import get_db, engine, Base
 from chat.schema import TokenData, User
 from chat.setting import setting
 from chat.utils.exception import CredentialsException
@@ -13,6 +13,8 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+Base.metadata.create_all(bind=engine)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
