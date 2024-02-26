@@ -1,20 +1,21 @@
+from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from typing import Annotated
+
 from chat import app
-from chat.schema import CreateUser, User
-from chat.utils.jwt import (
-    get_current_active_user,
-)
-from chat.utils.exception import (
-    AlreadyExistsException,
-)
 from chat.crud import (
     create_user_controller,
     get_user_groups_by_id,
 )
-
 from chat.database import get_db
+from chat.schema import CreateUser, User
+from chat.utils.exception import (
+    AlreadyExistsException,
+)
+from chat.utils.jwt import (
+    get_current_active_user,
+)
 
 
 @app.get("/user/me", tags=["User"], response_model=User)

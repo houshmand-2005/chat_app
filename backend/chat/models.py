@@ -1,16 +1,19 @@
-from enum import Enum
 from datetime import datetime
-from fastapi import WebSocket
+from enum import Enum
+
 from sqlalchemy import (
-    Column,
-    String,
-    Integer,
     Boolean,
+    Column,
     DateTime,
     ForeignKey,
+    Integer,
+    String,
+)
+from sqlalchemy import (
     Enum as SQLAlchemyEnum,
 )
 from sqlalchemy.orm import relationship
+
 from chat.database import Base
 
 

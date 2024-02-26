@@ -1,27 +1,26 @@
 from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from chat import app
-from chat import models
-from chat import schema
-from chat.utils.jwt import (
-    get_current_active_user,
+from chat import app, models, schema
+from chat.crud import (
+    create_group_controller,
+    get_group_by_address,
+    get_reads_messages,
+    group_members_by_id,
+    group_membership_check,
+    join_member_to_group,
 )
+from chat.database import get_db
 from chat.utils.exception import (
     AlreadyExistsException,
     ForbiddenException,
     NotFoundException,
 )
-from chat.crud import (
-    create_group_controller,
-    group_membership_check,
-    group_members_by_id,
-    join_member_to_group,
-    get_reads_messages,
-    get_group_by_address,
+from chat.utils.jwt import (
+    get_current_active_user,
 )
-from chat.database import get_db
 
 
 @app.post("/group/create/", tags=["Groups"])

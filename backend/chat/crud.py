@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
-from functools import lru_cache
-from chat import models
-from chat import schema
+
+from chat import models, schema
 from chat.utils.jwt import get_password_hash
 
 

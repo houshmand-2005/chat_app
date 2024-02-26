@@ -1,22 +1,22 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from chat import app
-from chat import models
-from chat.database import get_db
-from chat.utils.jwt import (
-    get_current_active_user,
-)
+
+from chat import app, models
 from chat.crud import (
+    create_change_controller,
+    delete_message,
+    edit_message,
+    get_first_unread_message_group,
     get_message_by_id,
     group_membership_check,
-    get_first_unread_message_group,
-    create_change_controller,
-    edit_message,
-    delete_message,
 )
+from chat.database import get_db
 from chat.utils.exception import (
     ForbiddenException,
     NotFoundException,
+)
+from chat.utils.jwt import (
+    get_current_active_user,
 )
 from chat.views.websocket import broadcast_changes
 
