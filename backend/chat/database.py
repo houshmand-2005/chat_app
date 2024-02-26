@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "postgresql://root:1234@db/postgres"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
+engine = create_engine(
+    "postgresql+psycopg://root:1234@db/postgres"
+)  # TODO: Change it to async!
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
